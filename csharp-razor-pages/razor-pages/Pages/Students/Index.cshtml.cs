@@ -1,21 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using RazorPages;
 using RazorPages.Data;
 using RazorPages.Models;
 
 namespace RazorPages.Pages.Students
 {
-    public class IndexModel : PageModel
+    public class IndexModel(
+            SchoolContext context,
+            IConfiguration configuration
+        ) : PageModel
     {
-        private readonly SchoolContext _context;
-        private readonly IConfiguration _configuration;
-
-        public IndexModel(SchoolContext context, IConfiguration configuration)
-        {
-            _context = context;
-            _configuration = configuration;
-        }
 
         public string NameSort { get; set; }
         public string DateSort { get; set; }
@@ -42,7 +36,7 @@ namespace RazorPages.Pages.Students
 
             CurrentFilter = searchString;
 
-            IQueryable<Student> studentsIQ = from s in _context.Students select s;
+            IQueryable<Student> studentsIQ = from s in context.Students select s;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -66,7 +60,7 @@ namespace RazorPages.Pages.Students
                     break;
             }
 
-            var pageSize = _configuration.GetValue("PageSize", 4);
+            var pageSize = configuration.GetValue("PageSize", 4);
             Students = await PaginatedList<Student>.CreateAsync(studentsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
         }
     }

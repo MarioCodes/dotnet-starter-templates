@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RazorPages.Data;
 using RazorPages.Models;
 
 namespace RazorPages.Pages.Students
 {
-    public class EditModel : PageModel
+    public class EditModel(SchoolContext context) : PageModel
     {
-        private readonly RazorPages.Data.SchoolContext _context;
-
-        public EditModel(RazorPages.Data.SchoolContext context)
-        {
-            _context = context;
-        }
 
         [BindProperty]
         public Student Student { get; set; } = default!;
@@ -30,7 +19,7 @@ namespace RazorPages.Pages.Students
                 return NotFound();
             }
 
-            Student =  await _context.Students.FirstOrDefaultAsync(m => m.ID == id);
+            Student =  await context.Students.FirstOrDefaultAsync(m => m.ID == id);
 
             if (Student == null)
             {
@@ -43,7 +32,7 @@ namespace RazorPages.Pages.Students
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync(int id)
         {
-            var studentToUpdate = await _context.Students.FindAsync(id);
+            var studentToUpdate = await context.Students.FindAsync(id);
 
             if(studentToUpdate == null)
             {
@@ -55,7 +44,7 @@ namespace RazorPages.Pages.Students
                 "student",
                 s => s.FirstMidName, s => s.LastName, s => s.EnrollmentDate))
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 return RedirectToPage("./Index");
             }
 
