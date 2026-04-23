@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RazorPages.Models.SchoolViewModels
+namespace Domain.Models
 {
     public class EnrollmentDateGroup
     {

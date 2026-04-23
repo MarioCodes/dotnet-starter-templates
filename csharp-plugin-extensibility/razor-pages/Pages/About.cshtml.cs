@@ -1,7 +1,7 @@
+using Domain.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RazorPages.Data;
-using RazorPages.Models.SchoolViewModels;
 
 namespace RazorPages.Pages
 {
