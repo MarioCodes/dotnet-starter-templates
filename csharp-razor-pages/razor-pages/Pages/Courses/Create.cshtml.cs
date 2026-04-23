@@ -3,33 +3,29 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPages.Data;
 using RazorPages.Models;
 
-namespace RazorPages.Pages.Students
+namespace razor_pages.Pages.Courses
 {
     public class CreateModel(SchoolContext context) : PageModel
     {
-
         public IActionResult OnGet()
         {
             return Page();
         }
 
-        // what we read from front's form is a StudentVM ...
         [BindProperty]
-        public StudentVM StudentVM { get; set; }
+        public Course Course { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var entry = context.Add(new Student());
-            // ... but what we save into the DDBB is a Student
-            // this does name pattern matching from StudentVM to Student
-            entry.CurrentValues.SetValues(StudentVM);
+            context.Courses.Add(Course);
             await context.SaveChangesAsync();
+
             return RedirectToPage("./Index");
         }
     }

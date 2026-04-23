@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RazorPages.Data;
@@ -10,17 +6,11 @@ using RazorPages.Models;
 
 namespace RazorPages.Pages.Students
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel(
+            SchoolContext context,
+            ILogger<DeleteModel> logger
+        ) : PageModel
     {
-        private readonly SchoolContext _context;
-        private readonly ILogger<DeleteModel> _logger;
-
-        public DeleteModel(SchoolContext context,
-                            ILogger<DeleteModel> logger)
-        {
-            _context = context;
-            _logger = logger;
-        }
 
         [BindProperty]
         public Student Student { get; set; }
@@ -33,7 +23,7 @@ namespace RazorPages.Pages.Students
                 return NotFound();
             }
 
-            var student = await _context.Students
+            var student = await context.Students
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
 
@@ -57,7 +47,7 @@ namespace RazorPages.Pages.Students
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await context.Students.FindAsync(id);
 
             if (student == null)
             {
@@ -66,13 +56,13 @@ namespace RazorPages.Pages.Students
 
             try
             {
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
+                context.Students.Remove(student);
+                await context.SaveChangesAsync();
                 return RedirectToPage("./Index");
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError(ex, ErrorMessage);
+                logger.LogError(ex, ErrorMessage);
                 return RedirectToAction("./Delete", new { id, saveChangesError = true });
             }
         }
