@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using RazorPages.Data;
 using RazorPages.Models;
 
-namespace RazorPages.Pages.Students
+namespace razor_pages.Pages.Courses
 {
     public class DetailsModel(SchoolContext context) : PageModel
     {
 
-        public Student Student { get; set; } = default!;
+        public Course Course { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -18,19 +18,14 @@ namespace RazorPages.Pages.Students
                 return NotFound();
             }
 
-            var student = await context.Students
-                .Include(st => st.Enrollments)
-                .ThenInclude(enrollment => enrollment.Course)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
-
-            if (student == null)
+            var course = await context.Courses.FirstOrDefaultAsync(m => m.CourseID == id);
+            if (course == null)
             {
                 return NotFound();
             }
             else
             {
-                Student = student;
+                Course = course;
             }
             return Page();
         }
